@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} PORTAL {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<style>
+    .h2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0
+    }
+</style>
+
+<body>
+    {% block content %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary d-flex"
+        style="display: flex; justify-content: center; align-items: center;">
+        <div class="container-fluid d-flex" style="justify-content: space-evenly;">
+            <a href="{% url 'tweet_list' %}"><img src="{% static 'logo.png' %}" width="100px" height="100x" alt="LOGO"></a>
+            <a id="ab" class="navbar-brand" style="font-family:Times New Roman; font-size: 50px;" href="{% url 'tweet_list' %}">inkIT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown"
+                style="justify-content: space-between; font-size: medium;">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" style="font-size:larger;" href="{% url 'tweet_list' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="font-size:larger;" href="#">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" style="font-size:larger;" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Resources
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Blog search</a></li>
+                            <li><a class="dropdown-item" href="#">Contact</a></li>
+                            <li><a class="dropdown-item" href="#">Support</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!---create blog--->
+    <h1>
+        {% if form.instance.pk %}
+        Edit Blog
+        {% else %}
+
+        <div class="d-flex flex-column align-items-center">
+            <p class="text-center" style="font-family: Georgia, 'Times New Roman', Times, serif;">CREATE BLOG</a></p>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data" class="form">
+                {% csrf_token %}
+                {{form.as_p}}
+                <center><button class="btn btn-outline-light" type="submit">DONE</button></center>
+            </form>
+            <a style="color: bisque; font-size:small;" href="{% url 'tweet_list' %}"> Back to home</a>
+        </div>
+        <div class="container row gap-3"></div>
+        {% for tweet in tweets %}
+        <div class="card" style="width: 18rem;">
+            {% if tweet.photo %}
+            <img src="{{tweet.photo.url}}" class="card-img-top" alt="...">
+            {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">{{tweet.user.username}}</h5>
+                <p class="card-text">{{tweet.text}}</p>
+                </p>
+                {% if tweet.user is user %}
+                <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-primary">Edit</a>
+                <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-secondary">Delete</a>
+                {% endif %}
+
+                {% endfor %}
+            </div>
+        </div>
+    </h1>
+
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
